@@ -1,5 +1,8 @@
 import { Client, ThreadState } from "@langchain/langgraph-sdk";
-import { LangChainMessage } from "@assistant-ui/react-langgraph";
+import {
+  LangChainMessage,
+  LangGraphCommand,
+} from "@assistant-ui/react-langgraph";
 
 const createClient = () => {
   const apiUrl =
@@ -24,16 +27,20 @@ export const getThreadState = async (
 
 export const sendMessage = async (params: {
   threadId: string;
-  messages: LangChainMessage[];
+  messages?: LangChainMessage[];
+  command?: LangGraphCommand | undefined;
 }) => {
   const client = createClient();
   return client.runs.stream(
     params.threadId,
     process.env["NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID"]!,
     {
-      input: {
-        messages: params.messages,
-      },
+      input: params.messages?.length
+        ? {
+            messages: params.messages,
+          }
+        : null,
+      command: params.command,
       streamMode: "messages",
     }
   );

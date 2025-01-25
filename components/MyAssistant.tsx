@@ -10,10 +10,10 @@ import { createThread, getThreadState, sendMessage } from "@/lib/chatApi";
 const MarkdownText = makeMarkdownText();
 
 export function MyAssistant() {
-  const threadIdRef = useRef<string | undefined>();
+  const threadIdRef = useRef<string | undefined>(undefined);
   const runtime = useLangGraphRuntime({
     threadId: threadIdRef.current,
-    stream: async (messages) => {
+    stream: async (messages, { command }) => {
       if (!threadIdRef.current) {
         const { thread_id } = await createThread();
         threadIdRef.current = thread_id;
@@ -22,6 +22,7 @@ export function MyAssistant() {
       return sendMessage({
         threadId,
         messages,
+        command,
       });
     },
     onSwitchToNewThread: async () => {
