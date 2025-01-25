@@ -41,7 +41,7 @@ export const sendMessage = async (params: {
           }
         : null,
       command: params.command,
-      streamMode: "messages",
+      streamMode: ["messages", "updates"],
     }
   );
 };
